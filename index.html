@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- SEO -->
+  <title>Three Brother Saloon — Premium Grooming & Luxury Barber Experience</title>
+  <meta name="description" content="Book a premium barbering experience at Three Brother Saloon. Expert cuts, beard grooming, hot towel shaves, and luxury facials. Reserve your appointment online today.">
+  <meta name="theme-color" content="#D4AF37">
+
+  <!-- Supabase Config — injected from .env at serve time -->
+  <meta name="sb-url" content="https://vyyoapdwhzubklstljhl.supabase.co">
+  <meta name="sb-key" content="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5eW9hcGR3aHp1Ymtsc3RsamhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM0MDk2NTYsImV4cCI6MjA5ODk4NTY1Nn0.1YApz6Ol4UTUQ6Rb8o4pTr1fsoa9RSS_isYGmuK7YUE">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            gold:    { DEFAULT: '#D4AF37', light: '#F0D060', dark: '#A8891F' },
+            charcoal:{ DEFAULT: '#121212', 2: '#1A1A1A', 3: '#222222' },
+          },
+          fontFamily: {
+            serif: ['"Playfair Display"', 'Georgia', 'serif'],
+            sans:  ['Inter', 'system-ui', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+
+  <!-- Supabase JS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/app.css">
+</head>
+
+<body class="bg-charcoal text-gray-100 font-sans antialiased">
+
+<!-- ═══════════════════════════════════════════
+     NAVBAR
+═══════════════════════════════════════════ -->
+<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+  <div class="max-container mx-auto px-6 h-16 flex items-center justify-between">
+    <!-- Logo -->
+    <button data-nav="home" class="logo-emblem group cursor-pointer">
+      <div class="flex items-center gap-3">
+        <span class="logo-scissors">✂️</span>
+        <div>
+          <p class="font-serif text-lg leading-tight text-gold-gradient font-bold group-hover:opacity-90 transition-opacity">
+            Three Brother
+          </p>
+          <p class="text-xs tracking-[0.3em] text-gray-400 uppercase leading-none">Saloon</p>
+        </div>
+      </div>
+    </button>
+
+    <!-- Desktop Nav -->
+    <div class="hidden md:flex items-center gap-8">
+      <button data-nav="home"      class="text-gray-400 hover:text-gold transition-colors text-sm tracking-wide">Home</button>
+      <button data-nav="booking"   class="text-gray-400 hover:text-gold transition-colors text-sm tracking-wide">Book Now</button>
+      <button data-nav="dashboard" class="text-gray-400 hover:text-gold transition-colors text-sm tracking-wide">My Appointments</button>
+    </div>
+
+    <!-- Auth Nav -->
+    <div class="flex items-center gap-3">
+      <!-- Guest buttons -->
+      <div id="nav-guest" class="flex items-center gap-2">
+        <button id="btn-login"  class="btn-outline-gold text-sm px-4 py-1.5">Sign In</button>
+        <button id="btn-signup" class="btn-gold text-sm px-4 py-1.5">Join</button>
+      </div>
+      <!-- User menu -->
+      <div id="nav-user" class="hidden flex items-center gap-3">
+        <button id="nav-dashboard-link"
+          class="text-sm text-gray-300 hover:text-gold transition-colors flex items-center gap-1.5">
+          <span class="w-7 h-7 rounded-full bg-amber-500 text-black font-bold text-xs flex items-center justify-center">
+            👤
+          </span>
+          <span id="nav-username" class="hidden sm:block">User</span>
+        </button>
+        <button id="btn-logout" class="text-xs text-gray-500 hover:text-red-400 transition-colors">
+          Sign out
+        </button>
+      </div>
+      <!-- Mobile toggle -->
+      <button id="menu-toggle" class="md:hidden text-gray-400 hover:text-gold ml-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 border-t" style="border-color:var(--border); background:rgba(18,18,18,0.97)">
+    <div class="flex flex-col gap-3 pt-4">
+      <button data-nav="home"      class="text-left text-gray-300 hover:text-gold transition-colors py-1">Home</button>
+      <button data-nav="booking"   class="text-left text-gray-300 hover:text-gold transition-colors py-1">Book Appointment</button>
+      <button data-nav="dashboard" class="text-left text-gray-300 hover:text-gold transition-colors py-1">My Appointments</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════
+     HOME SECTION
+═══════════════════════════════════════════ -->
+<main id="home-section">
+
+  <!-- HERO -->
+  <section id="hero" class="relative overflow-hidden" style="background: url('images/hero_bg.png') center/cover no-repeat;">
+    <!-- Dark overlay -->
+    <div class="absolute inset-0 bg-charcoal opacity-80"></div>
+    <!-- Background pattern -->
+    <div class="absolute inset-0 opacity-10" style="
+      background-image: repeating-linear-gradient(45deg, #D4AF37 0, #D4AF37 1px, transparent 0, transparent 50%);
+      background-size: 20px 20px;">
+    </div>
+
+    <div class="relative z-10 max-container mx-auto px-6 text-center py-32 pt-40">
+      <!-- Logo Placeholder -->
+      <div class="flex justify-center mb-8">
+        <div class="inline-flex flex-col items-center gap-3 p-6 rounded-2xl"
+             style="border:1px solid var(--border-gold); background:rgba(212,175,55,0.04)">
+          <div class="text-6xl" style="filter:drop-shadow(0 0 20px rgba(212,175,55,0.5))">✂️</div>
+          <div class="text-xs tracking-[0.5em] text-gold uppercase">Est. 2024</div>
+          <p class="text-xs text-muted italic">[ Vintage Emblem Logo Placeholder ]</p>
+        </div>
+      </div>
+
+      <!-- Heading -->
+      <p class="text-sm tracking-[0.4em] text-gold uppercase mb-4 animate-fade-in-up">
+        Where Brotherhood Meets Premium Grooming
+      </p>
+      <h1 class="font-serif text-5xl md:text-7xl lg:text-8xl font-bold leading-tight mb-6 animate-fade-in-up animate-delay-1">
+        <span class="text-gold-gradient">Three Brother</span><br>
+        <span class="text-white">Saloon</span>
+      </h1>
+      <div class="hero-divider animate-fade-in-up animate-delay-2"></div>
+      <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-10 animate-fade-in-up animate-delay-2">
+        Experience the art of luxury grooming. Where every visit is a ritual, every cut a masterpiece,
+        and every client a brother.
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up animate-delay-3">
+        <button id="btn-book-hero" class="btn-gold text-base px-10 py-4">
+          ✂️ Book Appointment
+        </button>
+        <button data-nav="home"
+          onclick="document.getElementById('features-section').scrollIntoView({behavior:'smooth'})"
+          class="btn-outline-gold text-base px-10 py-4">
+          Explore Our Services
+        </button>
+      </div>
+
+      <!-- Stats -->
+      <div class="grid grid-cols-3 gap-6 max-w-md mx-auto mt-16 animate-fade-in-up">
+        <div class="text-center">
+          <p class="font-serif text-3xl text-gold font-bold">4+</p>
+          <p class="text-xs text-muted uppercase tracking-wider mt-1">Expert Barbers</p>
+        </div>
+        <div class="text-center" style="border-left:1px solid var(--border); border-right:1px solid var(--border)">
+          <p class="font-serif text-3xl text-gold font-bold">12+</p>
+          <p class="text-xs text-muted uppercase tracking-wider mt-1">Services</p>
+        </div>
+        <div class="text-center">
+          <p class="font-serif text-3xl text-gold font-bold">★ 4.9</p>
+          <p class="text-xs text-muted uppercase tracking-wider mt-1">Avg Rating</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+      <svg class="w-5 h-5 text-gold opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features-section" class="section-padding bg-section-alt">
+    <div class="max-container mx-auto px-6">
+      <div class="text-center mb-14">
+        <p class="text-sm tracking-widest text-gold mb-3 uppercase">Why Choose Us</p>
+        <h2 class="font-serif text-4xl md:text-5xl text-white">
+          The <span class="text-gold-gradient">Three Brother</span> Difference
+        </h2>
+        <div class="hero-divider"></div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Feature 1 -->
+        <div class="feature-card card p-8 opacity-0" style="animation-delay:0s">
+          <div class="feature-icon">💈</div>
+          <h3 class="font-serif text-xl text-white mb-3">Master Barbers</h3>
+          <p class="text-muted leading-relaxed">
+            Our barbers bring decades of combined expertise. Each cut is crafted with
+            precision, passion, and a deep understanding of classic and modern styles.
+          </p>
+        </div>
+        <!-- Feature 2 -->
+        <div class="feature-card card p-8 opacity-0" style="animation-delay:0.15s">
+          <div class="feature-icon">🥃</div>
+          <h3 class="font-serif text-xl text-white mb-3">Luxury Lounge</h3>
+          <p class="text-muted leading-relaxed">
+            Step into a world of vintage elegance. Our lounge features premium leather chairs,
+            warm lighting, and a curated ambiance that turns a haircut into an experience.
+          </p>
+        </div>
+        <!-- Feature 3 -->
+        <div class="feature-card card p-8 opacity-0" style="animation-delay:0.3s">
+          <div class="feature-icon">🧴</div>
+          <h3 class="font-serif text-xl text-white mb-3">Premium Products</h3>
+          <p class="text-muted leading-relaxed">
+            We use only the finest grooming products — from hot towels and straight razors
+            to artisan pomades and beard oils that nourish and protect.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES PREVIEW -->
+  <section class="section-padding">
+    <div class="max-container mx-auto px-6">
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+        <div>
+          <p class="text-sm tracking-widest text-gold mb-3 uppercase">Our Craft</p>
+          <h2 class="font-serif text-4xl md:text-5xl text-white">
+            Premium <span class="text-gold-gradient">Services</span>
+          </h2>
+          <div class="hero-divider" style="margin-left:0; background:linear-gradient(90deg,var(--gold),transparent)"></div>
+        </div>
+        <button id="btn-book-services" class="btn-outline-gold self-start md:self-auto">
+          View All & Book →
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Service Preview Cards — static for landing -->
+        <div class="service-preview-card card p-6 opacity-0">
+          <div class="text-3xl mb-3">✂️</div>
+          <div class="text-xs text-gold tracking-widest uppercase mb-2">Haircuts</div>
+          <h3 class="font-serif text-lg text-white mb-2">Classic & Fade Cuts</h3>
+          <p class="text-muted text-sm mb-4">From timeless classics to sharp modern fades, every cut is tailored to you.</p>
+          <p class="text-gold font-bold">From ₹1,500</p>
+        </div>
+        <div class="service-preview-card card p-6 opacity-0">
+          <div class="text-3xl mb-3">🪒</div>
+          <div class="text-xs text-gold tracking-widest uppercase mb-2">Beard & Shaving</div>
+          <h3 class="font-serif text-lg text-white mb-2">Hot Towel Shave</h3>
+          <p class="text-muted text-sm mb-4">Indulge in a traditional straight-razor shave with warm towels and premium oils.</p>
+          <p class="text-gold font-bold">From ₹1,200</p>
+        </div>
+        <div class="service-preview-card card p-6 opacity-0">
+          <div class="text-3xl mb-3">👑</div>
+          <div class="text-xs text-gold tracking-widest uppercase mb-2">Combos</div>
+          <h3 class="font-serif text-lg text-white mb-2">The King Package</h3>
+          <p class="text-muted text-sm mb-4">The full treatment — haircut, beard grooming, and a deep cleanse facial.</p>
+          <p class="text-gold font-bold">From ₹6,500</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MASTER BARBERS -->
+  <section id="barbers-section" class="section-padding bg-charcoal">
+    <div class="max-container mx-auto px-6">
+      <div class="text-center mb-14">
+        <p class="text-sm tracking-widest text-gold mb-3 uppercase">The Artists</p>
+        <h2 class="font-serif text-4xl md:text-5xl text-white">
+          Our <span class="text-gold-gradient">Master Barbers</span>
+        </h2>
+        <div class="hero-divider"></div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Barber 1 -->
+        <div class="card overflow-hidden group">
+          <div class="h-80 relative" style="background: url('images/barber_1.png') center/cover no-repeat;">
+            <div class="absolute inset-0 bg-gradient-to-t from-charcoal to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
+            <div class="absolute bottom-4 left-6">
+              <h3 class="font-serif text-2xl text-white">Marcus</h3>
+              <p class="text-gold text-sm tracking-wide uppercase mt-1">Senior Barber / Fades</p>
+            </div>
+          </div>
+        </div>
+        <!-- Barber 2 -->
+        <div class="card overflow-hidden group">
+          <div class="h-80 relative" style="background: url('images/barber_2.png') center/cover no-repeat;">
+            <div class="absolute inset-0 bg-gradient-to-t from-charcoal to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
+            <div class="absolute bottom-4 left-6">
+              <h3 class="font-serif text-2xl text-white">Julian</h3>
+              <p class="text-gold text-sm tracking-wide uppercase mt-1">Master Stylist / Scissors</p>
+            </div>
+          </div>
+        </div>
+        <!-- Barber 3 -->
+        <div class="card overflow-hidden group">
+          <div class="h-80 relative" style="background: url('images/barber_3.png') center/cover no-repeat;">
+            <div class="absolute inset-0 bg-gradient-to-t from-charcoal to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
+            <div class="absolute bottom-4 left-6">
+              <h3 class="font-serif text-2xl text-white">David</h3>
+              <p class="text-gold text-sm tracking-wide uppercase mt-1">Beard Specialist / Hot Towel</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA BANNER -->
+  <section class="section-padding bg-section-alt">
+    <div class="max-container mx-auto px-6 text-center">
+      <div class="max-w-2xl mx-auto">
+        <p class="text-sm tracking-widest text-gold mb-4 uppercase">Ready for the Experience?</p>
+        <h2 class="font-serif text-4xl md:text-5xl text-white mb-6">
+          Book Your <span class="text-gold-gradient">Appointment</span> Today
+        </h2>
+        <p class="text-muted mb-8">
+          Join hundreds of satisfied brothers. Reserve your chair in under 2 minutes
+          with our smart online booking system.
+        </p>
+        <button id="btn-book-cta" class="btn-gold text-lg px-12 py-4"
+                onclick="window.dispatchEvent(new CustomEvent('route', {detail:'booking'}))">
+          ✂️ Reserve My Seat
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer style="background:#0a0a0a; border-top:1px solid var(--border)">
+    <div class="max-container mx-auto px-6 py-12">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+        <div>
+          <div class="flex items-center gap-3 mb-4">
+            <span class="text-3xl">✂️</span>
+            <div>
+              <p class="font-serif text-gold font-bold">Three Brother</p>
+              <p class="text-xs tracking-widest text-gray-500 uppercase">Saloon</p>
+            </div>
+          </div>
+          <p class="text-muted text-sm leading-relaxed">
+            Premium grooming experience where brotherhood and craftsmanship meet.
+          </p>
+        </div>
+        <div>
+          <h4 class="font-semibold text-white mb-4">Quick Links</h4>
+          <ul class="space-y-2 text-sm text-muted">
+            <li><button data-nav="home"      class="hover:text-gold transition-colors">Home</button></li>
+            <li><button data-nav="booking"   class="hover:text-gold transition-colors">Book Appointment</button></li>
+            <li><button data-nav="dashboard" class="hover:text-gold transition-colors">My Appointments</button></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-semibold text-white mb-4">Contact</h4>
+          <ul class="space-y-2 text-sm text-muted">
+            <li>📍 123 Brotherhood Lane, Barber District</li>
+            <li>📞 +1 (555) 0-BARBER</li>
+            <li>⏰ Mon–Sat: 9am – 7pm</li>
+            <li>⏰ Sunday: 10am – 5pm</li>
+          </ul>
+        </div>
+      </div>
+      <div class="gold-line"></div>
+      <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-600">
+        <p>© 2024 Three Brother Saloon. All rights reserved.</p>
+        <p>Built with ✂️ and ❤️ for the craft.</p>
+      </div>
+    </div>
+  </footer>
+
+</main>
+
+<!-- ═══════════════════════════════════════════
+     BOOKING SECTION
+═══════════════════════════════════════════ -->
+<section id="booking-section" class="hidden pt-16 min-h-screen">
+  <div class="flex items-center justify-center py-20">
+    <div class="text-center">
+      <div class="w-10 h-10 border-2 border-gold border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+      <p class="text-muted text-sm">Loading booking engine…</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     DASHBOARD SECTION
+═══════════════════════════════════════════ -->
+<section id="dashboard-section" class="hidden pt-16 min-h-screen">
+  <div class="flex items-center justify-center py-20">
+    <div class="text-center">
+      <div class="w-10 h-10 border-2 border-gold border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+      <p class="text-muted text-sm">Loading dashboard…</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     ORDER SUMMARY STICKY BAR
+═══════════════════════════════════════════ -->
+<div id="order-summary" class="py-3 px-6">
+  <div class="max-container mx-auto flex flex-wrap items-center justify-between gap-4">
+    <div class="flex items-center gap-6">
+      <div>
+        <p class="text-xs text-muted">Selected</p>
+        <p class="font-semibold text-white" id="summary-count">0 services</p>
+      </div>
+      <div style="width:1px; height:36px; background:var(--border)"></div>
+      <div>
+        <p class="text-xs text-muted">Duration</p>
+        <p class="font-semibold text-white" id="summary-duration">0 min</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-4">
+      <div class="text-right">
+        <p class="text-xs text-muted">Total</p>
+        <p class="font-bold text-gold text-xl" id="summary-price">₹0</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     AUTH MODAL
+═══════════════════════════════════════════ -->
+<div id="auth-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Authentication">
+  <div class="modal-box">
+
+    <!-- Close -->
+    <button id="auth-close" class="absolute top-4 right-4 text-gray-500 hover:text-gold transition-colors" aria-label="Close">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
+
+    <!-- Header -->
+    <div class="text-center mb-6">
+      <span class="text-4xl">✂️</span>
+      <h2 class="font-serif text-2xl text-white mt-2">Three Brother Saloon</h2>
+    </div>
+
+    <!-- Tabs -->
+    <div class="flex mb-6 border-b" style="border-color:var(--border)">
+      <button id="tab-login"  class="dash-tab active flex-1 text-center">Sign In</button>
+      <button id="tab-signup" class="dash-tab flex-1 text-center">Create Account</button>
+    </div>
+
+    <!-- Error -->
+    <div id="auth-error" class="hidden text-red-400 text-sm text-center mb-4 p-3 rounded"
+         style="background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.2)">
+    </div>
+
+    <!-- Login Form -->
+    <div id="login-form-wrap">
+      <form id="login-form" class="space-y-4" novalidate>
+        <div>
+          <label class="block text-xs text-muted mb-1.5" for="loginEmail">Email Address</label>
+          <input type="email" id="loginEmail" class="form-input" placeholder="you@example.com"
+                 autocomplete="email" required>
+        </div>
+        <div>
+          <label class="block text-xs text-muted mb-1.5" for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" class="form-input" placeholder="••••••••"
+                 autocomplete="current-password" required>
+        </div>
+        <button type="submit" class="btn-gold w-full py-3 mt-2">Sign In</button>
+      </form>
+      <p class="text-center text-xs text-muted mt-4">
+        No account?
+        <button id="switch-to-signup"
+          class="text-gold hover:underline"
+          onclick="document.getElementById('tab-signup').click()">
+          Create one here
+        </button>
+      </p>
+    </div>
+
+    <!-- Signup Form -->
+    <div id="signup-form-wrap" class="hidden">
+      <form id="signup-form" class="space-y-4" novalidate>
+        <div>
+          <label class="block text-xs text-muted mb-1.5" for="signupName">Full Name</label>
+          <input type="text" id="signupName" class="form-input" placeholder="Your name"
+                 autocomplete="name" required>
+        </div>
+        <div>
+          <label class="block text-xs text-muted mb-1.5" for="signupEmail">Email Address</label>
+          <input type="email" id="signupEmail" class="form-input" placeholder="you@example.com"
+                 autocomplete="email" required>
+        </div>
+        <div>
+          <label class="block text-xs text-muted mb-1.5" for="signupPhone">Phone (optional)</label>
+          <input type="tel" id="signupPhone" class="form-input" placeholder="+1 555 000 0000"
+                 autocomplete="tel">
+        </div>
+        <div>
+          <label class="block text-xs text-muted mb-1.5" for="signupPassword">Password</label>
+          <input type="password" id="signupPassword" class="form-input" placeholder="Min. 8 characters"
+                 autocomplete="new-password" required minlength="8">
+        </div>
+        <button type="submit" class="btn-gold w-full py-3 mt-2">Create Account</button>
+      </form>
+      <p class="text-center text-xs text-muted mt-4">
+        Already have an account?
+        <button class="text-gold hover:underline"
+          onclick="document.getElementById('tab-login').click()">
+          Sign in here
+        </button>
+      </p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TOAST NOTIFICATION
+═══════════════════════════════════════════ -->
+<div id="toast" role="alert" aria-live="polite"></div>
+
+<!-- ═══════════════════════════════════════════
+     MAIN JS (ES Module)
+═══════════════════════════════════════════ -->
+<script type="module" src="js/app.js"></script>
+
+</body>
+</html>
