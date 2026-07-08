@@ -87,7 +87,7 @@ async function callGeminiAPI(base64Image) {
   }
 
   try {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${key}`;
     const base64Data = base64Image.split(',')[1];
     
     const payload = {
