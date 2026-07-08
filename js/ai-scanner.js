@@ -7,7 +7,16 @@ let detectionInterval;
 let isAnalyzing = false;
 let geminiResult = null;
 
-const GEMINI_API_KEY = localStorage.getItem('GEMINI_API_KEY') || '';
+function getAPIKey() {
+  let key = localStorage.getItem('GEMINI_API_KEY');
+  if (!key) {
+    key = prompt("Please enter your Google Gemini API Key (AIza... or AQ...):");
+    if (key) {
+      localStorage.setItem('GEMINI_API_KEY', key.trim());
+    }
+  }
+  return key ? key.trim() : '';
+}
 
 const recommendations = {
   'Oval': [
@@ -54,8 +63,14 @@ const btnBookAi = document.getElementById('btn-book-ai');
 
 // Call Gemini Pro API
 async function callGeminiAPI(base64Image) {
+  let key = getAPIKey();
+  if (!key) {
+    alert("API Key is required to use the Gemini Scanner.");
+    throw new Error("No API Key");
+  }
+
   try {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`;
     const base64Data = base64Image.split(',')[1];
     
     const payload = {
@@ -74,13 +89,21 @@ async function callGeminiAPI(base64Image) {
       body: JSON.stringify(payload)
     });
     
-    if (!response.ok) throw new Error("API Request Failed");
+    if (!response.ok) {
+      // If unauthorized or bad request, it might be an invalid key
+      if (response.status === 400 || response.status === 401 || response.status === 403) {
+        localStorage.removeItem('GEMINI_API_KEY');
+        alert("The API Key provided is invalid or expired. Please refresh and try again.");
+      }
+      throw new Error(`API Request Failed with status ${response.status}`);
+    }
+    
     const data = await response.json();
     const jsonText = data.candidates[0].content.parts[0].text;
     return JSON.parse(jsonText);
   } catch (error) {
     console.error("Gemini API Error:", error);
-    // Fallback to random if API key is invalid/fails
+    // Fallback to random if API key fails
     const randomShape = shapes[Math.floor(Math.random() * shapes.length)];
     const rec = recommendations[randomShape][0];
     return {
