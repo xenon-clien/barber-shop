@@ -65,8 +65,14 @@ const btnBookAi = document.getElementById('btn-book-ai');
 // Load Face API Models
 async function loadModels() {
   if (isModelsLoaded) return true;
+  if (typeof faceapi === 'undefined') {
+    console.error('face-api.js script failed to load.');
+    loading.innerHTML = '<p class="text-red-400 text-sm">AI engine failed to load. Please disable AdBlocker and refresh.</p>';
+    return false;
+  }
+  
   try {
-    const MODEL_URL = 'https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights';
+    const MODEL_URL = 'https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@master/weights';
     await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
     await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
     isModelsLoaded = true;
