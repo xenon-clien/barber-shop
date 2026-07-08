@@ -87,7 +87,7 @@ function renderServices(container, activeCategory) {
           <p class="text-xs text-muted ml-6 mt-1">⏱ ${s.duration_minutes} min</p>
         </div>
         <div class="text-right">
-          <p class="text-gold font-bold text-base">₹${(parseFloat(s.price) * 100).toLocaleString('en-IN')}</p>
+          <p class="text-gold font-bold text-base">₹${parseFloat(s.price).toLocaleString('en-IN')}</p>
           <p class="text-xs text-muted">${s.category}</p>
         </div>
       </div>
@@ -119,7 +119,7 @@ function updateOrderSummary() {
   }
   bar.classList.add('visible');
   bar.querySelector('#summary-count').textContent    = `${count} service${count !== 1 ? 's' : ''}`;
-  bar.querySelector('#summary-price').textContent    = `₹${(parseFloat(price) * 100).toLocaleString('en-IN')}`;
+  bar.querySelector('#summary-price').textContent    = `₹${parseFloat(price).toLocaleString('en-IN')}`;
   bar.querySelector('#summary-duration').textContent = `${duration} min`;
 }
 
@@ -246,7 +246,7 @@ function renderConfirmation(container) {
         ${selectedServices.map(s => `
           <div class="flex justify-between py-1 border-b" style="border-color:var(--border)">
             <span class="text-gray-300">${s.name}</span>
-            <span class="text-gold">₹${(parseFloat(s.price) * 100).toLocaleString('en-IN')}</span>
+            <span class="text-gold">₹${parseFloat(s.price).toLocaleString('en-IN')}</span>
           </div>
         `).join('')}
       </div>
@@ -267,7 +267,7 @@ function renderConfirmation(container) {
       <div class="flex justify-between font-bold">
         <span class="text-gold">Total</span>
         <div class="text-right">
-          <span class="text-gold text-xl">₹${(parseFloat(price) * 100).toLocaleString('en-IN')}</span>
+          <span class="text-gold text-xl">₹${parseFloat(price).toLocaleString('en-IN')}</span>
           <p class="text-xs text-muted font-normal">${duration} minutes</p>
         </div>
       </div>

@@ -37,9 +37,28 @@
 
   <!-- Custom CSS -->
   <link rel="stylesheet" href="css/app.css">
+  
 </head>
 
-<body class="bg-charcoal text-gray-100 font-sans antialiased">
+<body class="bg-charcoal text-gray-100 font-sans antialiased overflow-hidden" id="body">
+
+<!-- ═══════════════════════════════════════════
+     INTRO ANIMATION
+═══════════════════════════════════════════ -->
+<div id="intro-overlay" class="fixed inset-0 z-[9999] flex justify-center pointer-events-none">
+  <!-- Left Curtain -->
+  <div id="intro-left" class="w-1/2 h-full bg-charcoal border-r border-gold border-opacity-0 transition-all duration-[1200ms] ease-in-out relative flex items-center justify-end overflow-hidden">
+    <!-- Optional logo part on left curtain -->
+  </div>
+  <!-- Right Curtain -->
+  <div id="intro-right" class="w-1/2 h-full bg-charcoal border-l border-gold border-opacity-0 transition-all duration-[1200ms] ease-in-out relative flex items-center justify-start overflow-hidden">
+  </div>
+  
+  <!-- Scissor -->
+  <div id="intro-scissor" class="absolute -top-32 transition-transform duration-[1500ms] flex flex-col items-center" style="transition-timing-function: cubic-bezier(0.65, 0, 0.35, 1);">
+    <div class="text-7xl animate-pulse" style="filter: drop-shadow(0 0 20px rgba(212,175,55,0.8)); transform: rotate(-90deg);">✂️</div>
+  </div>
+</div>
 
 <!-- ═══════════════════════════════════════════
      NAVBAR
@@ -121,15 +140,6 @@
     </div>
 
     <div class="relative z-10 max-container mx-auto px-6 text-center py-32 pt-40">
-      <!-- Logo Placeholder -->
-      <div class="flex justify-center mb-8">
-        <div class="inline-flex flex-col items-center gap-3 p-6 rounded-2xl"
-             style="border:1px solid var(--border-gold); background:rgba(212,175,55,0.04)">
-          <div class="text-6xl" style="filter:drop-shadow(0 0 20px rgba(212,175,55,0.5))">✂️</div>
-          <div class="text-xs tracking-[0.5em] text-gold uppercase">Est. 2024</div>
-          <p class="text-xs text-muted italic">[ Vintage Emblem Logo Placeholder ]</p>
-        </div>
-      </div>
 
       <!-- Heading -->
       <p class="text-sm tracking-[0.4em] text-gold uppercase mb-4 animate-fade-in-up">
@@ -146,16 +156,17 @@
       </p>
 
       <div class="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up animate-delay-3">
-        <button id="btn-book-hero" class="btn-gold text-base px-10 py-4">
+        <button id="btn-book-hero" class="btn-gold text-base px-10 py-4 shadow-[0_0_15px_rgba(212,175,55,0.3)]">
           ✂️ Book Appointment
         </button>
-        <button data-nav="home"
-          onclick="document.getElementById('features-section').scrollIntoView({behavior:'smooth'})"
-          class="btn-outline-gold text-base px-10 py-4">
-          Explore Our Services
+        <button onclick="openFaceScanner()" class="btn-outline-gold text-base px-10 py-4 border-gold text-gold hover:bg-gold hover:text-charcoal transition-all shadow-[0_0_10px_rgba(212,175,55,0.1)]">
+          📷 AI Face Scan 
         </button>
       </div>
 
+
+
+  <!-- Scripts -->
       <!-- Stats -->
       <div class="grid grid-cols-3 gap-6 max-w-md mx-auto mt-16 animate-fade-in-up">
         <div class="text-center">
@@ -181,131 +192,148 @@
     </div>
   </section>
 
-  <!-- FEATURES -->
-  <section id="features-section" class="section-padding bg-section-alt">
+  <!-- MARQUEE DIVIDER -->
+  <div class="overflow-hidden bg-gold py-3 my-8 relative z-20 shadow-[0_0_20px_rgba(212,175,55,0.3)] border-y border-gold-dark">
+    <div class="whitespace-nowrap animate-marquee flex gap-8 items-center text-charcoal font-bold text-sm tracking-[0.2em] uppercase">
+      <span>✂️ Classic Cuts</span><span>•</span><span>🪒 Hot Towel Shaves</span><span>•</span><span>👑 The King Package</span><span>•</span>
+      <span>✂️ Premium Styling</span><span>•</span><span>💈 Beard Grooming</span><span>•</span>
+      <span>✂️ Classic Cuts</span><span>•</span><span>🪒 Hot Towel Shaves</span><span>•</span><span>👑 The King Package</span><span>•</span>
+      <span>✂️ Premium Styling</span><span>•</span><span>💈 Beard Grooming</span>
+    </div>
+  </div>
+
+  <!-- EDITORIAL ZIG-ZAG SECTION -->
+  <section id="features-section" class="py-16 md:py-24 bg-charcoal relative">
     <div class="max-container mx-auto px-6">
-      <div class="text-center mb-14">
-        <p class="text-sm tracking-widest text-gold mb-3 uppercase">Why Choose Us</p>
+      
+      <!-- ZigZag 1 -->
+      <div class="flex flex-col md:flex-row items-center gap-12 md:gap-20 mb-24 anim-on-scroll">
+        <div class="flex-1 md:pr-10 relative">
+          <div class="absolute -left-10 -top-10 text-9xl opacity-5 font-serif select-none pointer-events-none">01</div>
+          <p class="text-xs tracking-widest text-gold mb-3 uppercase">Master Barbers</p>
+          <h2 class="font-serif text-4xl md:text-5xl text-white mb-6 leading-tight">Craftsmanship in Every <span class="text-gold-gradient italic">Detail</span></h2>
+          <p class="text-muted leading-relaxed text-lg mb-8">
+            Our barbers bring decades of combined expertise. Each cut is crafted with precision, passion, and a deep understanding of classic and modern styles. It's not just a haircut, it's an art form.
+          </p>
+          <button class="btn-outline-gold self-start md:self-auto hover:bg-gold hover:text-black transition-all" onclick="window.dispatchEvent(new CustomEvent('route', {detail:'booking'}))">
+            Meet the Artists →
+          </button>
+        </div>
+        <div class="flex-1 relative group w-full">
+          <div class="relative rounded-2xl overflow-hidden aspect-[4/5] md:aspect-square z-10" style="border: 1px solid var(--border-gold); background: url('images/barber_1.png') center/cover no-repeat;">
+            <div class="absolute inset-0 bg-gradient-to-t from-charcoal-2 to-transparent opacity-90 group-hover:opacity-30 transition-opacity duration-700"></div>
+          </div>
+          <div class="absolute -bottom-6 -right-6 w-32 h-32 border border-gold opacity-30 rounded-xl z-0 group-hover:translate-x-3 group-hover:translate-y-3 transition-transform duration-700"></div>
+        </div>
+      </div>
+
+      <!-- ZigZag 2 -->
+      <div class="flex flex-col md:flex-row-reverse items-center gap-12 md:gap-20 mb-16 anim-on-scroll">
+        <div class="flex-1 md:pl-10 relative">
+          <div class="absolute -right-10 -top-10 text-9xl opacity-5 font-serif select-none pointer-events-none text-right w-full">02</div>
+          <p class="text-xs tracking-widest text-gold mb-3 uppercase">Luxury Lounge</p>
+          <h2 class="font-serif text-4xl md:text-5xl text-white mb-6 leading-tight">Vintage <span class="text-gold-gradient italic">Elegance</span></h2>
+          <p class="text-muted leading-relaxed text-lg mb-8">
+            Step into a world of refined masculinity. Our lounge features premium leather chairs, warm lighting, and a curated ambiance that turns a simple grooming session into a ritual of relaxation.
+          </p>
+          <button class="btn-outline-gold self-start md:self-auto hover:bg-gold hover:text-black transition-all" onclick="window.dispatchEvent(new CustomEvent('route', {detail:'booking'}))">
+            Explore Services →
+          </button>
+        </div>
+        <div class="flex-1 relative group w-full">
+          <div class="relative rounded-2xl overflow-hidden aspect-[4/5] md:aspect-square z-10" style="border: 1px solid var(--border-gold); background: url('images/barber_2.png') center/cover no-repeat;">
+            <div class="absolute inset-0 bg-gradient-to-t from-charcoal-2 to-transparent opacity-90 group-hover:opacity-30 transition-opacity duration-700"></div>
+          </div>
+          <div class="absolute -top-6 -left-6 w-32 h-32 border border-gold opacity-30 rounded-xl z-0 group-hover:-translate-x-3 group-hover:-translate-y-3 transition-transform duration-700"></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- TRENDING STYLES & AI GUIDE -->
+  <section id="styles-section" class="py-16 md:py-24 bg-charcoal relative border-t" style="border-color:var(--border);">
+    <div class="max-container mx-auto px-6">
+      <div class="text-center mb-16">
+        <p class="text-sm tracking-widest text-gold mb-3 uppercase">Style Inspiration</p>
         <h2 class="font-serif text-4xl md:text-5xl text-white">
-          The <span class="text-gold-gradient">Three Brother</span> Difference
+          Trending <span class="text-gold-gradient italic">Looks</span>
         </h2>
-        <div class="hero-divider"></div>
+        <p class="text-muted mt-4">Select a style to see the AI Barber Guide.</p>
       </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        
+        <!-- Style 1 -->
+        <div class="card overflow-hidden group">
+          <div class="h-72 bg-charcoal-2 relative" style="background: url('https://images.unsplash.com/photo-1599351431202-1e0f0137899a?q=80&w=600&auto=format&fit=crop') center/cover no-repeat;">
+            <div class="absolute inset-0 bg-gradient-to-t from-charcoal to-transparent opacity-90"></div>
+            <div class="absolute bottom-4 left-6 right-6">
+              <h3 class="font-serif text-xl text-white mb-2">Classic Pompadour</h3>
+              <button class="w-full btn-outline-gold text-xs py-2 hover:bg-gold hover:text-black transition-all" onclick="openAIGuide('Classic Pompadour')">Ask AI Guide ✨</button>
+            </div>
+          </div>
+        </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <!-- Feature 1 -->
-        <div class="feature-card card p-8 opacity-0" style="animation-delay:0s">
-          <div class="feature-icon">💈</div>
-          <h3 class="font-serif text-xl text-white mb-3">Master Barbers</h3>
-          <p class="text-muted leading-relaxed">
-            Our barbers bring decades of combined expertise. Each cut is crafted with
-            precision, passion, and a deep understanding of classic and modern styles.
-          </p>
+        <!-- Style 2 -->
+        <div class="card overflow-hidden group">
+          <div class="h-72 bg-charcoal-2 relative" style="background: url('https://images.unsplash.com/photo-1622286342621-4bd786c2447c?q=80&w=600&auto=format&fit=crop') center/cover no-repeat;">
+            <div class="absolute inset-0 bg-gradient-to-t from-charcoal to-transparent opacity-90"></div>
+            <div class="absolute bottom-4 left-6 right-6">
+              <h3 class="font-serif text-xl text-white mb-2">Mid Fade & Line Up</h3>
+              <button class="w-full btn-outline-gold text-xs py-2 hover:bg-gold hover:text-black transition-all" onclick="openAIGuide('Mid Fade & Line Up')">Ask AI Guide ✨</button>
+            </div>
+          </div>
         </div>
-        <!-- Feature 2 -->
-        <div class="feature-card card p-8 opacity-0" style="animation-delay:0.15s">
-          <div class="feature-icon">🥃</div>
-          <h3 class="font-serif text-xl text-white mb-3">Luxury Lounge</h3>
-          <p class="text-muted leading-relaxed">
-            Step into a world of vintage elegance. Our lounge features premium leather chairs,
-            warm lighting, and a curated ambiance that turns a haircut into an experience.
-          </p>
-        </div>
-        <!-- Feature 3 -->
-        <div class="feature-card card p-8 opacity-0" style="animation-delay:0.3s">
-          <div class="feature-icon">🧴</div>
-          <h3 class="font-serif text-xl text-white mb-3">Premium Products</h3>
-          <p class="text-muted leading-relaxed">
-            We use only the finest grooming products — from hot towels and straight razors
-            to artisan pomades and beard oils that nourish and protect.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- SERVICES PREVIEW -->
-  <section class="section-padding">
-    <div class="max-container mx-auto px-6">
-      <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
-        <div>
-          <p class="text-sm tracking-widest text-gold mb-3 uppercase">Our Craft</p>
-          <h2 class="font-serif text-4xl md:text-5xl text-white">
-            Premium <span class="text-gold-gradient">Services</span>
-          </h2>
-          <div class="hero-divider" style="margin-left:0; background:linear-gradient(90deg,var(--gold),transparent)"></div>
+        <!-- Style 3 -->
+        <div class="card overflow-hidden group">
+          <div class="h-72 bg-charcoal-2 relative" style="background: url('https://images.unsplash.com/photo-1503951914875-452162b0f3f1?q=80&w=600&auto=format&fit=crop') center/cover no-repeat;">
+            <div class="absolute inset-0 bg-gradient-to-t from-charcoal to-transparent opacity-90"></div>
+            <div class="absolute bottom-4 left-6 right-6">
+              <h3 class="font-serif text-xl text-white mb-2">Textured Crop</h3>
+              <button class="w-full btn-outline-gold text-xs py-2 hover:bg-gold hover:text-black transition-all" onclick="openAIGuide('Textured Crop')">Ask AI Guide ✨</button>
+            </div>
+          </div>
         </div>
-        <button id="btn-book-services" class="btn-outline-gold self-start md:self-auto">
-          View All & Book →
-        </button>
-      </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- Service Preview Cards — static for landing -->
-        <div class="service-preview-card card p-6 opacity-0">
-          <div class="text-3xl mb-3">✂️</div>
-          <div class="text-xs text-gold tracking-widest uppercase mb-2">Haircuts</div>
-          <h3 class="font-serif text-lg text-white mb-2">Classic & Fade Cuts</h3>
-          <p class="text-muted text-sm mb-4">From timeless classics to sharp modern fades, every cut is tailored to you.</p>
-          <p class="text-gold font-bold">From ₹1,500</p>
-        </div>
-        <div class="service-preview-card card p-6 opacity-0">
-          <div class="text-3xl mb-3">🪒</div>
-          <div class="text-xs text-gold tracking-widest uppercase mb-2">Beard & Shaving</div>
-          <h3 class="font-serif text-lg text-white mb-2">Hot Towel Shave</h3>
-          <p class="text-muted text-sm mb-4">Indulge in a traditional straight-razor shave with warm towels and premium oils.</p>
-          <p class="text-gold font-bold">From ₹1,200</p>
-        </div>
-        <div class="service-preview-card card p-6 opacity-0">
-          <div class="text-3xl mb-3">👑</div>
-          <div class="text-xs text-gold tracking-widest uppercase mb-2">Combos</div>
-          <h3 class="font-serif text-lg text-white mb-2">The King Package</h3>
-          <p class="text-muted text-sm mb-4">The full treatment — haircut, beard grooming, and a deep cleanse facial.</p>
-          <p class="text-gold font-bold">From ₹6,500</p>
-        </div>
       </div>
     </div>
   </section>
 
-  <!-- MASTER BARBERS -->
-  <section id="barbers-section" class="section-padding bg-charcoal">
+  <!-- DYNAMIC BARBERS GALLERY -->
+  <section id="barbers-section" class="py-16 md:py-24 bg-section-alt border-t border-b" style="border-color:var(--border);">
     <div class="max-container mx-auto px-6">
-      <div class="text-center mb-14">
+      <div class="text-center mb-16">
         <p class="text-sm tracking-widest text-gold mb-3 uppercase">The Artists</p>
         <h2 class="font-serif text-4xl md:text-5xl text-white">
-          Our <span class="text-gold-gradient">Master Barbers</span>
+          Meet Our <span class="text-gold-gradient italic">Masters</span>
         </h2>
-        <div class="hero-divider"></div>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <!-- Barber 1 -->
-        <div class="card overflow-hidden group">
-          <div class="h-80 relative" style="background: url('images/barber_1.png') center/cover no-repeat;">
-            <div class="absolute inset-0 bg-gradient-to-t from-charcoal to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
-            <div class="absolute bottom-4 left-6">
-              <h3 class="font-serif text-2xl text-white">Marcus</h3>
-              <p class="text-gold text-sm tracking-wide uppercase mt-1">Senior Barber / Fades</p>
-            </div>
+      
+      <div class="flex flex-col md:flex-row gap-6 justify-center max-w-5xl mx-auto">
+        <!-- Interactive Barber Cards -->
+        <div class="relative flex-1 rounded-2xl overflow-hidden h-[400px] group border border-transparent hover:border-gold transition-all duration-500 cursor-pointer" style="background: url('images/barber_1.png') center/cover no-repeat;">
+          <div class="absolute inset-0 bg-charcoal opacity-70 group-hover:opacity-30 transition-opacity duration-500"></div>
+          <div class="absolute inset-0 p-8 flex flex-col justify-end bg-gradient-to-t from-charcoal to-transparent">
+            <h3 class="font-serif text-3xl text-white transform group-hover:-translate-y-2 transition-transform duration-500">Marcus</h3>
+            <p class="text-gold text-sm tracking-wide uppercase mt-1 opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500 delay-100">Senior Barber</p>
           </div>
         </div>
-        <!-- Barber 2 -->
-        <div class="card overflow-hidden group">
-          <div class="h-80 relative" style="background: url('images/barber_2.png') center/cover no-repeat;">
-            <div class="absolute inset-0 bg-gradient-to-t from-charcoal to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
-            <div class="absolute bottom-4 left-6">
-              <h3 class="font-serif text-2xl text-white">Julian</h3>
-              <p class="text-gold text-sm tracking-wide uppercase mt-1">Master Stylist / Scissors</p>
-            </div>
+        
+        <div class="relative flex-1 rounded-2xl overflow-hidden h-[400px] group border border-transparent hover:border-gold transition-all duration-500 cursor-pointer" style="background: url('images/barber_2.png') center/cover no-repeat;">
+          <div class="absolute inset-0 bg-charcoal opacity-70 group-hover:opacity-30 transition-opacity duration-500"></div>
+          <div class="absolute inset-0 p-8 flex flex-col justify-end bg-gradient-to-t from-charcoal to-transparent">
+            <h3 class="font-serif text-3xl text-white transform group-hover:-translate-y-2 transition-transform duration-500">Julian</h3>
+            <p class="text-gold text-sm tracking-wide uppercase mt-1 opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500 delay-100">Master Stylist</p>
           </div>
         </div>
-        <!-- Barber 3 -->
-        <div class="card overflow-hidden group">
-          <div class="h-80 relative" style="background: url('images/barber_3.png') center/cover no-repeat;">
-            <div class="absolute inset-0 bg-gradient-to-t from-charcoal to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
-            <div class="absolute bottom-4 left-6">
-              <h3 class="font-serif text-2xl text-white">David</h3>
-              <p class="text-gold text-sm tracking-wide uppercase mt-1">Beard Specialist / Hot Towel</p>
-            </div>
+        
+        <div class="relative flex-1 rounded-2xl overflow-hidden h-[400px] group border border-transparent hover:border-gold transition-all duration-500 cursor-pointer" style="background: url('images/barber_3.png') center/cover no-repeat;">
+          <div class="absolute inset-0 bg-charcoal opacity-70 group-hover:opacity-30 transition-opacity duration-500"></div>
+          <div class="absolute inset-0 p-8 flex flex-col justify-end bg-gradient-to-t from-charcoal to-transparent">
+            <h3 class="font-serif text-3xl text-white transform group-hover:-translate-y-2 transition-transform duration-500">David</h3>
+            <p class="text-gold text-sm tracking-wide uppercase mt-1 opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500 delay-100">Beard Specialist</p>
           </div>
         </div>
       </div>
@@ -313,20 +341,21 @@
   </section>
 
   <!-- CTA BANNER -->
-  <section class="section-padding bg-section-alt">
-    <div class="max-container mx-auto px-6 text-center">
-      <div class="max-w-2xl mx-auto">
+  <section class="py-20 md:py-32 relative overflow-hidden bg-charcoal" style="background: url('images/hero_bg.png') center/cover no-repeat fixed;">
+    <div class="absolute inset-0 bg-charcoal opacity-95"></div>
+    <div class="relative z-10 max-container mx-auto px-6 text-center">
+      <div class="max-w-2xl mx-auto border border-gold border-opacity-20 rounded-2xl p-10 md:p-16" style="background:rgba(212,175,55,0.03); backdrop-filter:blur(12px);">
         <p class="text-sm tracking-widest text-gold mb-4 uppercase">Ready for the Experience?</p>
-        <h2 class="font-serif text-4xl md:text-5xl text-white mb-6">
-          Book Your <span class="text-gold-gradient">Appointment</span> Today
+        <h2 class="font-serif text-4xl md:text-5xl text-white mb-6 leading-tight">
+          Reserve Your <span class="text-gold-gradient italic">Seat</span>
         </h2>
-        <p class="text-muted mb-8">
+        <p class="text-muted mb-10 text-lg">
           Join hundreds of satisfied brothers. Reserve your chair in under 2 minutes
           with our smart online booking system.
         </p>
-        <button id="btn-book-cta" class="btn-gold text-lg px-12 py-4"
+        <button id="btn-book-cta" class="btn-gold text-lg px-12 py-4 shadow-[0_0_20px_rgba(212,175,55,0.2)] hover:shadow-[0_0_30px_rgba(212,175,55,0.4)]"
                 onclick="window.dispatchEvent(new CustomEvent('route', {detail:'booking'}))">
-          ✂️ Reserve My Seat
+          ✂️ Book Appointment
         </button>
       </div>
     </div>
@@ -518,6 +547,109 @@
 </div>
 
 <!-- ═══════════════════════════════════════════
+     AI GUIDE MODAL
+═══════════════════════════════════════════ -->
+<div id="ai-modal" class="modal-overlay">
+  <div class="modal-box relative border border-gold overflow-hidden bg-charcoal" style="max-width: 500px;">
+    <!-- Decorative AI Glow -->
+    <div class="absolute -top-20 -right-20 w-40 h-40 bg-gold rounded-full blur-[80px] opacity-20 pointer-events-none"></div>
+    
+    <button class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl p-2 z-10" onclick="closeAIGuide()">✕</button>
+    
+    <div class="flex items-center gap-4 mb-6 border-b border-gray-800 pb-4">
+      <div class="w-12 h-12 rounded-full flex items-center justify-center bg-gold text-charcoal font-bold text-lg shadow-[0_0_15px_rgba(212,175,55,0.4)]">AI</div>
+      <div>
+        <h3 class="font-serif text-xl text-white">Barber Assistant</h3>
+        <p class="text-xs text-gold tracking-widest uppercase mt-1" id="ai-style-name">Loading...</p>
+      </div>
+    </div>
+    
+    <div id="ai-content" class="text-sm text-gray-300 space-y-5 max-h-[60vh] overflow-y-auto pr-3 leading-relaxed">
+      <!-- AI Response populated via JS -->
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     LIVE AI FACE SCANNER MODAL
+═══════════════════════════════════════════ -->
+<div id="face-scanner-modal" class="modal-overlay z-[9999]">
+  <div class="modal-box relative border border-gold overflow-hidden bg-charcoal p-0 w-full max-w-2xl h-[85vh] md:h-[70vh] flex flex-col">
+    <!-- Header -->
+    <div class="flex items-center justify-between p-4 border-b border-gray-800 bg-charcoal-2 shrink-0 z-20 relative">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full flex items-center justify-center bg-gold text-charcoal font-bold animate-pulse shadow-[0_0_15px_rgba(212,175,55,0.5)]">AI</div>
+        <div>
+          <h3 class="font-serif text-lg text-white">Live Face Scanner</h3>
+          <p class="text-[10px] text-green-400 tracking-widest uppercase">100% Secure Client-Side</p>
+        </div>
+      </div>
+      <button class="text-gray-400 hover:text-white text-2xl p-2" onclick="closeFaceScanner()">✕</button>
+    </div>
+
+    <!-- Scanner Area -->
+    <div class="relative flex-1 bg-black flex items-center justify-center overflow-hidden">
+      <!-- Loading State -->
+      <div id="scanner-loading" class="absolute inset-0 flex flex-col items-center justify-center z-10 bg-charcoal/80 backdrop-blur-sm">
+        <div class="w-12 h-12 border-4 border-gold border-t-transparent rounded-full animate-spin mb-4"></div>
+        <p class="text-gold text-sm tracking-widest uppercase animate-pulse">Initializing AI Models...</p>
+      </div>
+      
+      <!-- Video Element -->
+      <video id="scanner-video" autoplay muted playsinline class="absolute inset-0 w-full h-full object-cover hidden"></video>
+      <!-- Canvas overlay for drawing bounding box -->
+      <canvas id="scanner-canvas" class="absolute inset-0 w-full h-full object-cover z-10 hidden"></canvas>
+
+      <!-- Scanning Grid / Cyberpunk Overlay -->
+      <div id="scanner-grid" class="absolute inset-0 pointer-events-none opacity-20 hidden" style="background-image: linear-gradient(var(--gold) 1px, transparent 1px), linear-gradient(90deg, var(--gold) 1px, transparent 1px); background-size: 40px 40px;"></div>
+      
+      <!-- Scan Line Animation -->
+      <div id="scanner-line" class="absolute top-0 left-0 w-full h-1 bg-gold shadow-[0_0_20px_var(--gold)] hidden z-20"></div>
+    </div>
+
+    <!-- Results Panel -->
+    <div id="scanner-result" class="p-4 md:p-6 bg-charcoal-2 border-t border-gold shrink-0 transition-all transform translate-y-full absolute bottom-0 w-full z-30 h-[95%] md:h-[90%] opacity-0 flex flex-col" style="transition: transform 0.5s ease-out, opacity 0.5s;">
+      
+      <!-- Top info -->
+      <div class="flex items-start justify-between mb-3 border-b border-gray-800 pb-2 shrink-0">
+        <div>
+          <h4 class="font-serif text-xl text-white mb-1">Scan Complete!</h4>
+          <p class="text-[10px] text-gold uppercase tracking-widest">Face Shape: <span id="res-shape" class="text-white font-bold">...</span></p>
+        </div>
+      </div>
+      
+      <!-- MAIN BIG IMAGE VIEWER -->
+      <div class="w-full h-64 md:h-80 shrink-0 relative bg-black rounded-lg border border-gray-800 overflow-hidden mb-3">
+        <p class="absolute top-2 left-2 bg-gold text-black text-[10px] px-2 py-1 uppercase font-bold z-10 rounded shadow">AI Try-On</p>
+        <img id="res-main-img" src="" class="w-full h-full object-cover object-top transition-opacity duration-300" />
+      </div>
+
+      <!-- Selected Info -->
+      <div class="shrink-0 mb-3 text-center">
+         <h5 id="res-main-title" class="text-white font-serif text-lg mb-1">...</h5>
+         <p id="res-main-desc" class="text-xs text-gray-400">...</p>
+      </div>
+      
+      <!-- Horizontal Thumbnails (Options) -->
+      <div id="ai-options-container" class="flex overflow-x-auto space-x-3 pb-2 mb-2 custom-scrollbar shrink-0">
+        <!-- Rendered via JS -->
+      </div>
+      
+      <button id="btn-book-ai" class="w-full btn-gold py-3 mt-auto shrink-0" onclick="closeFaceScanner(); window.dispatchEvent(new CustomEvent('route', {detail:'booking'}))">
+        Book This Look
+      </button>
+    </div>
+
+    <!-- Actions (Bottom Bar when not completed) -->
+    <div id="scanner-actions" class="p-4 bg-charcoal shrink-0 border-t border-gray-800 flex justify-center z-20 relative">
+      <button id="btn-start-scan" class="btn-gold py-3 px-12 opacity-50 cursor-not-allowed" disabled onclick="startAnalysis()">
+        Waiting for Camera...
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
      TOAST NOTIFICATION
 ═══════════════════════════════════════════ -->
 <div id="toast" role="alert" aria-live="polite"></div>
@@ -526,6 +658,7 @@
      MAIN JS (ES Module)
 ═══════════════════════════════════════════ -->
 <script type="module" src="js/app.js"></script>
+<script src="js/ai-scanner.js"></script>
 
 </body>
 </html>

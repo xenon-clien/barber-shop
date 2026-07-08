@@ -92,7 +92,7 @@ function renderBookingCard(b) {
         </div>
         <div>
           <p class="text-xs text-muted">Total</p>
-          <p class="text-gold font-bold">₹${(parseFloat(b.total_price) * 100).toLocaleString('en-IN')}</p>
+          <p class="text-gold font-bold">₹${parseFloat(b.total_price).toLocaleString('en-IN')}</p>
         </div>
       </div>
       ${cancellable ? `

@@ -8,7 +8,7 @@ const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 async function testSignup() {
   console.log('Attempting signup...');
   const { data, error } = await sb.auth.signUp({
-    email: 'test_user_' + Date.now() + '@example.com',
+    email: 'test_user_' + Date.now() + '@gmail.com',
     password: 'password123',
     options: { data: { name: 'Test User' } }
   });
